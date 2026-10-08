@@ -156,7 +156,7 @@
 <section id="projects">
   <div class="section-tag reveal">Portfolio</div>
   <h2 class="section-title reveal">Featured Projects</h2>
-  <p class="section-desc reveal">A selection of web work I've built — edit your Google Sheet to update this automatically.</p>
+  <p class="section-desc reveal">Edit your Google Sheet to update this automatically.</p>
   <div class="projects-grid" id="projectsGrid">
     <p style="opacity:.6;text-align:center;padding:40px;grid-column:1/-1;">Loading projects...</p>
   </div>
@@ -167,30 +167,44 @@ const SHEET_ID = '1N9iSLft5mZvbhqr5muyKePfr1NGBOopxiBIqtyVN5jY';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
 const esc = s => String(s??'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
+function fixImageUrl(url) {
+  if (!url) return '';
+  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/) || url.match(/[?&]id=([^&]+)/);
+  return (m && url.includes('drive.google.com'))? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1000` : url;
+}
+
 async function loadProjects(){
   try{
     const res = await fetch(SHEET_URL, {cache:'no-store'});
     const txt = await res.text();
     const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}')+1));
-    const projects = json.table.rows.map(r=>r.c.map(c=>c?.v?String(c.v).trim():'')).filter(r=>r[0]).map(r=>({title:r[0],desc:r[1],tags:r[2]?r[2].split(','): [],link:r[3]}));
-    
+    const projects = json.table.rows
+     .map(r=>r.c.map(c=>c?.v?String(c.v).trim():''))
+     .filter(r=>r[0])
+     .map(r=>({
+        title:r[0], desc:r[1],
+        tags:r[2]?r[2].split(',').map(t=>t.trim()).filter(Boolean):[],
+        link:r[3],
+        image:fixImageUrl(r[4])
+      }));
+
     document.getElementById('projectsGrid').innerHTML = projects.map(p => `
       <div class="project-card reveal visible">
         <div class="proj-placeholder">
           <div class="proj-placeholder-inner" style="background:linear-gradient(135deg,#f0c060,#ff6b6b);"></div>
-          <span class="proj-placeholder-label">${esc(p.title.split(' ')[0])}</span>
+          ${p.image
+           ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" class="proj-img" loading="lazy" onerror="this.remove()">`
+            : `<span class="proj-placeholder-label">${esc(p.title.split(' ').slice(0,2).join(' '))}</span>`}
         </div>
         <div class="project-body">
-          <div class="project-tags">${p.tags.map(t=>`<span class="tag">${esc(t.trim())}</span>`).join('')}</div>
+          <div class="project-tags">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
           <div class="project-title">${esc(p.title)}</div>
           <p class="project-desc">${esc(p.desc)}</p>
           <a href="${esc(p.link)}" class="project-link" target="_blank" rel="noopener">View Project →</a>
         </div>
       </div>
     `).join('');
-  }catch(e){
-    console.error(e);
-  }
+  }catch(e){ console.error(e); }
 }
 loadProjects();
 </script>
