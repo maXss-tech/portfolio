@@ -17,8 +17,6 @@ require_once __DIR__ . '/Contact_handler.php';
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ─── NAV ──────────────────────────────────────── -->
 <nav>
@@ -51,8 +49,7 @@ require_once __DIR__ . '/Contact_handler.php';
       <a href="#contact" class="btn-ghost">Get in Touch</a>
     </div>
   </div>
-  <div class="hero-stats">
-    <div class="stat">
+  
       
   <div class="scroll-hint"><div class="scroll-line"></div><span>Scroll to explore</span></div>
 </section>
@@ -273,31 +270,7 @@ require_once __DIR__ . '/Contact_handler.php';
 </footer>
 
 <script>
-/* ─── CURSOR ─────────────────────────────────────── */
-const cursor = document.getElementById('cursor');
-const ring   = document.getElementById('cursorRing');
-let mx=0, my=0, rx=0, ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-(function tick() {
-  rx += (mx-rx) * .12; ry += (my-ry) * .12;
-  cursor.style.cssText += `left:${mx}px;top:${my}px;`;
-  ring.style.cssText   += `left:${rx}px;top:${ry}px;`;
-  requestAnimationFrame(tick);
-})();
-document.querySelectorAll('a,button,.project-card,.service-card,.skill-card').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.style.width = cursor.style.height = '18px';
-    ring.style.width = ring.style.height = '58px';
-    ring.style.opacity = '.2';
-    ring.style.borderColor = 'rgba(0,200,160,.6)';
-  });
-  el.addEventListener('mouseleave', () => {
-    cursor.style.width = cursor.style.height = '8px';
-    ring.style.width = ring.style.height = '34px';
-    ring.style.opacity = '1';
-    ring.style.borderColor = 'rgba(0,200,160,.5)';
-  });
-});
+
 
 /* ─── SCROLL REVEAL ──────────────────────────────── */
 const observer = new IntersectionObserver(entries => {
