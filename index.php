@@ -53,12 +53,7 @@ require_once __DIR__ . '/Contact_handler.php';
   </div>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num"><?= count($projects) ?>+</div>
-      <div class="stat-label">Projects Done</div>
-    </div>
-    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Services Offered</div></div>
-    <div class="stat"><div class="stat-num">20</div><div class="stat-label">Years Old</div></div>
-  </div>
+      
   <div class="scroll-hint"><div class="scroll-line"></div><span>Scroll to explore</span></div>
 </section>
 
